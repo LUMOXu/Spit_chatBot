@@ -1,0 +1,39 @@
+{
+  "fixed_params" :
+  {
+    "bot_qq" : 114514,
+    "bot_nickname" : "SpitFlight",
+    "admin_qq" : [],
+    "api-key" : "sk-euDQstLFJYFuJNuN********************************",
+    "proxy" : "http://127.0.0.1:10**"
+  },
+
+  "bot_config" :
+  {
+    "bot_group_info" :
+    [[1, "关闭"],
+     [114514, "homo群"],
+     [1919810, "mlp群"]
+    ],
+    "current_group_id" : 1919810,
+    "tpc" : 0.65,
+    "MAX_CACHED_RECORDS" : 16,
+    "MAX_CACHED_TIME" : 1800,
+    "REPLY_FREQ" : 5,
+    "STICKER_PROB" : 0.78,
+    "ocr_confidence": 96,
+    "show_other_groups" : true,
+    "nickname_mode" : false,
+    "reply_flag": false,
+    "prompt" : null
+  },
+
+  "parse_config" :
+  {
+    "truncate" : [0.1, 0.1],
+    "MAX_LEN" : 12,
+    "suspected": ["机器人"],
+    "bracket_prob" : [0.45, 0.4],
+    "parse_flag" : true
+  }
+}
