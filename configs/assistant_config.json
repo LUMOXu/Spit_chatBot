@@ -1,0 +1,38 @@
+{
+  "fixed_params" :
+  {
+    "bot_qq" : 114514,
+    "bot_nickname" : "SpitFlight",
+    "admin_qq" : [],
+    "api-key" : "",
+    "proxy" : ""
+  },
+
+  "bot_config" :
+  {
+    "bot_group_info" :
+    [[1, "关闭"],
+     []],
+    "current_group_id" : 1,
+    "tpc" : 0.04,
+    "MAX_CACHED_RECORDS" : 2,
+    "MAX_CACHED_TIME" : 86400,
+    "REPLY_FREQ" : 2147483647,
+    "STICKER_PROB" : 0.2,
+    "ocr_confidence": 96,
+    "show_other_groups" : false,
+    "nickname_mode" : false,
+    "reply_flag" : false,
+    "prompt" : "你叫SpitFlight，是一个ai助手，你现在在一个聊天群内。我会给出聊天记录，你来回答聊天记录里的问题。你对问题的回答应较简短。\n你在回答问题时应该称呼提问者的昵称。如果有多个提问者提问，可以分别回答，在每个回答中都要提到相应提问者的昵称。请用简体中文回答。"
+  },
+
+  "parse_config" :
+  {
+    "truncate" : [0],
+    "MAX_LEN" : 2147483647,
+    "suspected": [],
+    "bracket_prob" : [0, 0],
+    "parse_flag" : false
+  }
+
+}
