@@ -170,7 +170,9 @@ def parse_recieved_msg(message: Message or dict, sender):
 
 
 def send_sticker(message: Message):
-    with open('sticker.json', 'r') as f:
+    if not os.path.exists('stickers.json'):
+        raise FileNotFoundError('stickers.json not found.')
+    with open('stickers.json', 'r') as f:
         stickers = json.load(f)
         allowed = stickers['allowed']
         stickers_dict = stickers['stickers']
