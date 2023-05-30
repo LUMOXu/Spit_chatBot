@@ -109,7 +109,13 @@ def get_type_time(string):
     打字时间模拟
     """
     global tpc
-    return 1.5 + tpc*len(string)
+    time = 1.5 #基础时间
+    for ch in string:
+        if '\u4e00' <= ch <= '\u9fff': #中英文字符区分
+            time += 0.75
+        else:
+            time += 0.2
+    return time
 
 
 def if_suspected():
