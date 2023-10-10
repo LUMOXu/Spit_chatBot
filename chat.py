@@ -13,6 +13,7 @@ import os
 import re
 import random
 import json
+import requests
 
 blue_color = '\033[0;34m'
 cyan_color = '\033[0;36m'
@@ -39,9 +40,11 @@ def get_prompt(raw_record: list, fans_mode: bool or int):
     return res
 
 
+
 def answer(chat_rec, prompt=None):
-    global api_key, proxy
+    global api_key, proxy, api_endpoint
     openai.api_key = api_key
+    openai.api_endpoint = api_endpoint
     os.environ["HTTP_PROXY"] = proxy
     os.environ["HTTPS_PROXY"] = proxy
     # 提问
@@ -52,35 +55,43 @@ def answer(chat_rec, prompt=None):
     # 访问OpenAI接口
     print('Ready to answer...')
 
-    response = openai.ChatCompletion.create(
-        model='gpt-3.5-turbo',
-        messages=[
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": chat_rec}
-        ]
-    )
+    messages = [
+        {"role": "system", "content": prompt},
+        {"role": "user", "content": chat_rec}
+    ]
 
-    res = response.choices[0].message.content
+    request_data = {
+        'messages': messages
+    }
+
+    response = requests.post(api_endpoint, headers={'Authorization': f'Bearer {api_key}'}, json=request_data)
+    response = response.json()
+    res = response['choices'][0]['message']['content']
     total_tokens = response['usage']['total_tokens']
-    print(blue_color + f'bot回复: {res}  ' + f'(Tokens used: {total_tokens})' + end_color)
+    print(f'bot回复: {res}  (Tokens used: {total_tokens})')
     return res
 
 
+
 def describe_image(ocr_text):
-    global api_key, proxy
+    global api_key, proxy, api_endpoint
     openai.api_key = api_key
+    openai.api_endpoint = api_endpoint
     os.environ["HTTP_PROXY"] = proxy
     os.environ["HTTPS_PROXY"] = proxy
 
     print('ready to describe image...')
     prompt = '我会给你一张图片经ocr后识别出来的图片文字，其中可能包含各种杂乱文字，空格与符号。请你根据这些文字还原图片中最主要的信息，并将其精简到80字以内作为输出，使用简体中文输出。'
-    response = openai.ChatCompletion.create(
-        model='gpt-3.5-turbo',
-        messages=[
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": ocr_text}
-        ]
-    )
+    messages = [
+        {"role": "system", "content": prompt},
+        {"role": "user", "content": chat_rec}
+    ]
+
+    request_data = {
+        'messages': messages
+    }
+
+    response = requests.post(api_endpoint, headers={'Authorization': f'Bearer {api_key}'}, json=request_data)
 
     res = response.choices[0].message.content
     total_tokens = response['usage']['total_tokens']
@@ -108,9 +119,9 @@ def parse_reply(reply: str):
 
     try:
         if random.random() < bracket_prob[0]:  # 老互联网冲浪人士了（）
-            res[-1] += '（）'
+            res[-1] += '喵~'
         elif random.random() < bracket_prob[1]:
-            res[-1] += '（'
+            res[-1] += '~'
     except: pass
 
     if len(res) > MAX_LEN:  # 有时候bot说太多了
@@ -121,12 +132,13 @@ def parse_reply(reply: str):
 
 
 def load_parse_config(path=None):
-    global api_key, proxy, bot_qq, bot_nickname
+    global api_key, proxy, bot_qq, bot_nickname, api_endpoint
     with open('configs/bot_config.json' if path is None else 'configs/'+path, 'r', encoding='utf-8') as f:
         configs = json.load(f)
         bot_nickname = configs['fixed_params']['bot_nickname']
         bot_qq = configs['fixed_params']['bot_qq']
         api_key = configs['fixed_params']['api-key']
+        api_endpoint = configs['fixed_params']['api_endpoint']
         proxy = configs['fixed_params']['proxy']
         parse_config = configs['parse_config']
         for config in parse_config.keys():
