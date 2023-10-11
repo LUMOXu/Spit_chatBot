@@ -40,35 +40,42 @@ def get_prompt(raw_record: list, fans_mode: bool or int):
     return res
 
 
-
 def answer(chat_rec, prompt=None):
     global api_key, proxy, api_endpoint
     openai.api_key = api_key
     openai.api_endpoint = api_endpoint
+    print(api_key)
+    print( proxy)
+    print(api_endpoint)
     os.environ["HTTP_PROXY"] = proxy
     os.environ["HTTPS_PROXY"] = proxy
     # 提问
     if prompt is None:
         with open('prompt.txt', 'r', encoding='utf-8') as f:
             prompt = f.read()
-
+    print( prompt)
+    proxies = {
+        "http": proxy,
+        "https": proxy,
+    }
     # 访问OpenAI接口
     print('Ready to answer...')
 
-    messages = [
-        {"role": "system", "content": prompt},
-        {"role": "user", "content": chat_rec}
-    ]
+    data = {
+    "model": "gpt-3.5-turbo",
+    "messages":[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": chat_rec}
+        ]
+}
 
-    request_data = {
-        'messages': messages
-    }
-
-    response = requests.post(api_endpoint, headers={'Authorization': f'Bearer {api_key}'}, json=request_data)
-    response = response.json()
-    res = response['choices'][0]['message']['content']
-    total_tokens = response['usage']['total_tokens']
-    print(f'bot回复: {res}  (Tokens used: {total_tokens})')
+# 发送POST请求到OpenAI API
+    response = requests.post(api_endpoint, headers={'Authorization': f'Bearer {api_key}'}, json=data, proxies=proxies)
+    result = response.json()  # 提取生成的文本
+    print(result)
+    res = result['choices'][0]['message']['content']
+    total_tokens = result['usage']['total_tokens']
+    print(blue_color + f'bot回复: {res}  ' + f'(Tokens used: {total_tokens})' + end_color)
     return res
 
 
@@ -77,8 +84,8 @@ def describe_image(ocr_text):
     global api_key, proxy, api_endpoint
     openai.api_key = api_key
     openai.api_endpoint = api_endpoint
-    os.environ["HTTP_PROXY"] = proxy
-    os.environ["HTTPS_PROXY"] = proxy
+    #os.environ["HTTP_PROXY"] = proxy
+    #os.environ["HTTPS_PROXY"] = proxy
 
     print('ready to describe image...')
     prompt = '我会给你一张图片经ocr后识别出来的图片文字，其中可能包含各种杂乱文字，空格与符号。请你根据这些文字还原图片中最主要的信息，并将其精简到80字以内作为输出，使用简体中文输出。'
@@ -88,13 +95,15 @@ def describe_image(ocr_text):
     ]
 
     request_data = {
+    	    "model": "gpt-3.5-turbo",
         'messages': messages
     }
 
     response = requests.post(api_endpoint, headers={'Authorization': f'Bearer {api_key}'}, json=request_data)
-
-    res = response.choices[0].message.content
-    total_tokens = response['usage']['total_tokens']
+    result = response.json()  # 提取生成的文本
+    print(result)
+    res = result['choices'][0]['message']['content']
+    total_tokens = result['usage']['total_tokens']
     print(blue_color + f'图片内容: {res}  ' + f'(Tokens used: {total_tokens})' + end_color)
     return res
 
