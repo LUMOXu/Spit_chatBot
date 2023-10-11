@@ -5,7 +5,7 @@
     "bot_nickname" : "SpitFlight",
     "admin_qq" : [],
     "api-key" : "sk-euDQstLFJYFuJNuN********************************",
-    "api_endpoint" : "https://api.openai.com/v1/engines/davinci-codex/completions",
+    "api_endpoint" : "https://api.openai.com/v1/chat/completions",
     "proxy" : "http://127.0.0.1:10**"
   },
 
